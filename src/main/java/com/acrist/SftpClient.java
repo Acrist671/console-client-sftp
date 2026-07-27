@@ -7,6 +7,11 @@ import com.acrist.utils.JsonSerializer;
 import com.acrist.utils.ValidationUtils;
 import com.jcraft.jsch.SftpException;
 
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -18,7 +23,12 @@ public class SftpClient {
 
     private static Scanner scanner;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedEncodingException {
+
+        System.setOut(new PrintStream(System.out, true, "UTF-8"));
+        System.setErr(new PrintStream(System.err, true, "UTF-8"));
+
+
         scanner = new Scanner(System.in);
 
         System.out.println("----SFTP JSON CLIENT----");
@@ -131,7 +141,7 @@ public class SftpClient {
         String domain = scanner.nextLine().trim();
 
         if (!ValidationUtils.isDomainUnique(addresses, domain)){
-            System.out.println("Такой Домен уже есть в списке");
+            System.out.println("Такой домен уже есть в списке");
             return;
         }
 
@@ -153,7 +163,7 @@ public class SftpClient {
         try {
             saveData(sftpManager, addresses);
         } catch (SftpException e) {
-            System.err.println("Запись не добалена, ошибка работы с сервером: " + e.getMessage());
+            System.err.println("Запись не добавлена, ошибка работы с сервером: " + e.getMessage());
             addresses.remove(new Address(domain, ip));
             return;
         }
